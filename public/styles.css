@@ -445,13 +445,12 @@ textarea.form-field {
   bottom: 0;
   left: 0;
   z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-content: center;
+
   visibility: hidden;
   opacity: 0;
   transform: scale(1.2);
   transition: all 0.33s ease-out;
+  overflow-y: auto;
 }
 
 .form-overlay--is-visible {
@@ -468,7 +467,7 @@ textarea.form-field {
   flex: 1;
   align-self: center;
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: 1fr;
   position: relative;
 }
 
@@ -476,6 +475,32 @@ textarea.form-field {
   order: 1;
   grid-row: 1;
   position: relative;
+  height: 250px;
+}
+
+.form-content {
+  padding: 38px 30px;
+}
+
+@media screen and (min-width: 745px) {
+  .form-overlay {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+  }
+
+  .form-content {
+    padding: 38px 54px;
+    position: relative;
+  }
+
+  .form-overlay-inner {
+    grid-template-columns: 340px 1fr;
+  }
+
+  .form-photo {
+    height: auto;
+  }
 }
 
 .form-photo p {
@@ -511,11 +536,6 @@ textarea.form-field {
   justify-content: end;
 }
 
-.form-content {
-  padding: 38px 54px;
-  position: relative;
-}
-
 .close-form-overlay {
   position: absolute;
   top: 0;
@@ -525,6 +545,7 @@ textarea.form-field {
   transform: scaleX(1.2);
   cursor: pointer;
   opacity: 0.7;
+  z-index: 101;
 }
 
 .close-form-overlay:hover {
