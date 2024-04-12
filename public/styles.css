@@ -62,8 +62,7 @@ body {
   text-decoration: none;
   padding: 13px 25px;
   border-radius: 1000px;
-  transition: background-color 0.3s ease-out, border 0.3s ease-out,
-    color 0.3s ease-out;
+  transition: background-color 0.3s ease-out, border 0.3s ease-out, color 0.3s ease-out;
 }
 
 .our-btn:hover {
@@ -470,6 +469,7 @@ textarea.form-field {
   align-self: center;
   display: grid;
   grid-template-columns: 340px 1fr;
+  position: relative;
 }
 
 .form-photo {
@@ -545,4 +545,37 @@ textarea.form-field {
 
 .pet-contact-btn:hover {
   opacity: 1;
+}
+
+.thank-you {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 102;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-out;
+}
+
+.thank-you--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.thank-you p {
+  align-self: center;
+  font-size: 1.4rem;
+}
+
+.thank-you svg {
+  color: rgb(12, 189, 12);
+  position: relative;
+  top: 4px;
+  margin-right: 4px;
 }
