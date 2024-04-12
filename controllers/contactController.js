@@ -1,6 +1,7 @@
 const sanitizeHtml = require("sanitize-html")
 const { ObjectId } = require("mongodb")
 const petsCollection = require("../db").db().collection("pets")
+const contactsCollection = require("../db").db().collection("contacts")
 const nodemailer = require("nodemailer")
 const validator = require("validator")
 
@@ -15,6 +16,16 @@ exports.submitContact = async function (req, res, next) {
     return res.json({ message: "Sorry!" })
   }
 
+  if (typeof req.body.name != "string") {
+    req.body.name = ""
+  }
+  if (typeof req.body.email != "string") {
+    req.body.email = ""
+  }
+  if (typeof req.body.comment != "string") {
+    req.body.comment = ""
+  }
+
   if (!validator.isEmail(req.body.email)) {
     console.log("Invalid email detected")
     return res.json({ message: "Sorry!" })
@@ -25,7 +36,8 @@ exports.submitContact = async function (req, res, next) {
     return res.json({ message: "Sorry!" })
   }
 
-  const doesPetExist = await petsCollection.findOne({ _id: new ObjectId(req.body.petId) })
+  req.body.petId = new ObjectId(req.body.petId)
+  const doesPetExist = await petsCollection.findOne({ _id: req.body.petId })
 
   if (!doesPetExist) {
     console.log("Pet does not exist")
@@ -33,6 +45,7 @@ exports.submitContact = async function (req, res, next) {
   }
 
   const ourObject = {
+    petId: req.body.petId,
     name: sanitizeHtml(req.body.name, sanitizeOptions),
     email: sanitizeHtml(req.body.email, sanitizeOptions),
     comment: sanitizeHtml(req.body.comment, sanitizeOptions)
@@ -72,10 +85,29 @@ exports.submitContact = async function (req, res, next) {
       `
     })
 
-    await Promise.all([promise1, promise2])
+    const promise3 = contactsCollection.insertOne(ourObject)
+
+    await Promise.all([promise1, promise2, promise3])
   } catch (err) {
     next(err)
   }
 
   res.send("Thanks for sending data to us")
+}
+
+exports.viewPetContacts = async (req, res) => {
+  if (!ObjectId.isValid(req.params.id)) {
+    console.log("bad id")
+    return res.redirect("/")
+  }
+
+  const pet = await petsCollection.findOne({ _id: new ObjectId(req.params.id) })
+
+  if (!pet) {
+    console.log("Pet does not exist")
+    return res.redirect("/")
+  }
+
+  const contacts = await contactsCollection.find({ petId: new ObjectId(req.params.id) }).toArray()
+  res.render("pet-contacts", { contacts, pet })
 }
